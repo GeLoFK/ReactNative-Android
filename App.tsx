@@ -138,7 +138,7 @@ function NotificationsScreen({navigation: navigation}) {
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       <Button
         onPress={() => navigation.goBack()}
-        title="Ну давай, нажми на меня"
+        title="Ну давай, натисни на мене"
       />
     </View>
   );
