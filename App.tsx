@@ -17,6 +17,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {setNews} from './store/action/newsActions';
 import {Provider, useDispatch, useSelector} from 'react-redux';
 import store, {persistor} from './store';
+import NewsUkraine from './Component/NewsUkraine';
 import {PersistGate} from 'redux-persist/integration/react';
 
 function HomeScreen({navigation}) {
@@ -25,7 +26,7 @@ function HomeScreen({navigation}) {
   const newsFromStore = useSelector(state => state.news.articles);
   useEffect(() => {
     fetch(
-      `https://newsapi.org/v2/everything?q=${savedString}&from=2023-12-13&sortBy=popularity&apiKey=12661ef1e65c42f3b9aad032b9a3e8b7`,
+      `https://newsapi.org/v2/everything?q=${savedString}&from=2023-12-13&sortBy=popularity&apiKey=a0a31f938c6a44488f3d693366954b2a`,
     )
       .then(response => response.json())
       .then(data => {
@@ -170,11 +171,10 @@ function DetailsScreen({navigation: navigation}) {
 }
 
 function NotificationsScreen({navigation}) {
-  return (
-    <News>
-
-    </News>
-  );
+  return <News />;
+}
+function NewsUkraineScreen({navigation}) {
+  return <NewsUkraine />;
 }
 
 const Stack = createNativeStackNavigator();
@@ -199,12 +199,13 @@ function StackNavigator() {
 
 function App() {
   return (
-    <PersistGate loading={<Text>Loading...</Text>} persistor={persistor}>
+    <PersistGate loading={<Text>Звгрузка...</Text>} persistor={persistor}>
       <Provider store={store}>
         <NavigationContainer>
           <Drawer.Navigator initialRouteName="Main">
             <Drawer.Screen name="Меню" component={StackNavigator} />
             <Drawer.Screen name="Новини" component={NotificationsScreen} />
+            <Drawer.Screen name="News Ukraine" component={NewsUkraineScreen} />
           </Drawer.Navigator>
         </NavigationContainer>
       </Provider>

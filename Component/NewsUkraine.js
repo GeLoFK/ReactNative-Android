@@ -10,11 +10,13 @@ import {
   Alert,
   TextInput,
   Linking,
+  TouchableOpacity,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {setString} from '../store/action/stringActions';
+import {setData} from '../store/action/dataActions';
 
-function News({navigation}) {
+function NewsUkraine({navigation}) {
   const newsFromStore = useSelector(state => state.news.articles);
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +41,7 @@ function News({navigation}) {
           <Button
             style={styles.button1}
             title={'Перейти'}
-            onPress={() => Linking.openURL(`${item.url}`)}
+            фonPress={() => Linking.openURL(`${item.url}`)}
           />
         </View>
       </View>
@@ -47,29 +49,22 @@ function News({navigation}) {
   );
 
   useEffect(() => {
-    if (newsFromStore && flag == true) {
-      setNews(newsFromStore);
-      setLoading(false);
-      setFlag(false);
-      //Alert.alert('Fetching news with query:', savedString);
-    } else {
-      fetch(
-        `https://newsapi.org/v2/everything?q=${savedString}&from=2023-12-13&sortBy=popularity&apiKey=a0a31f938c6a44488f3d693366954b2a`,
-        {
-          method: 'GET',
-        },
-      )
-        .then(response => response.json())
-        .then(data => {
-          setNews(data.articles);
-          setLoading(false);
-        })
-        .catch(error => {
-          console.error('Немає мережі(', error);
-          setLoading(false);
-        });
-    }
-  }, [savedString]);
+    fetch(
+      'https://newsapi.org/v2/top-headlines?apiKey=a0a31f938c6a44488f3d693366954b2a&country=ua',
+      {
+        method: 'GET',
+      },
+    )
+      .then(response => response.json())
+      .then(data => {
+        setNews(data.articles);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Помилка отримання новин!', error);
+        setLoading(false);
+      });
+  });
 
   if (loading) {
     return (
@@ -89,33 +84,31 @@ function News({navigation}) {
   }
 
   return (
-    <View>
-      <View
+    <View
+      style={{
+        padding: 10,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderColor: 'rgb(224, 224, 224)',
+        borderBottomWidth: 1,
+      }}>
+      <TextInput
         style={{
+          height: 40,
+          margin: 12,
+          width: 350,
+          borderWidth: 1,
           padding: 10,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
+          borderRadius: 50,
           borderColor: 'rgb(224, 224, 224)',
-          borderBottomWidth: 1,
-        }}>
-        <TextInput
-          style={{
-            height: 40,
-            margin: 12,
-            width: 350,
-            borderWidth: 1,
-            padding: 10,
-            borderRadius: 50,
-            borderColor: 'rgb(224, 224, 224)',
-            backgroundColor: 'rgb(63,63,175)',
-          }}
-          placeholder="Які новини вас цікавлять?"
-          onChangeText={newText => setText(newText)}
-          defaultValue={text}
-        />
-        <Button title="Пошук" onPress={() => dispatch(setString(text))} />
-      </View>
+          backgroundColor: 'rgb(63,63,175)',
+        }}
+        placeholder="Які новини вас цікавлять?"
+        onChangeText={newText => setText(newText)}
+        defaultValue={text}
+      />
+      <Button title="Пошук" onPress={() => dispatch(setString(text))} />
       <FlatList
         data={news}
         renderItem={renderItem}
@@ -165,7 +158,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer1: {
     position: 'absolute',
-    bottom: 18,
+    top: 18,
     right: 10,
     width: 100,
     height: 50,
@@ -177,4 +170,4 @@ const styles = StyleSheet.create({
     backgroundColor: 'blue',
   },
 });
-export default News;
+export default NewsUkraine;
