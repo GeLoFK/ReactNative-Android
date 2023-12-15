@@ -1,7 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
+
+import News from './Component/News';
 import {
   Button,
-  Image, Linking,
+  Image,
+  Linking,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -11,7 +14,25 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 
+import {setNews} from './store/action/newsActions';
+import {Provider, useDispatch, useSelector} from 'react-redux';
+import store, {persistor} from './store';
+import {PersistGate} from 'redux-persist/integration/react';
+
 function HomeScreen({navigation}) {
+  const savedString = useSelector(state => state.string.savedString);
+  const dispatch = useDispatch();
+  const newsFromStore = useSelector(state => state.news.articles);
+  useEffect(() => {
+    fetch(
+      `https://newsapi.org/v2/everything?q=${savedString}&from=2023-12-13&sortBy=popularity&apiKey=12661ef1e65c42f3b9aad032b9a3e8b7`,
+    )
+      .then(response => response.json())
+      .then(data => {
+        dispatch(setNews(data.articles));
+      })
+      .catch(error => console.error('Get news error!!!!!!!', error));
+  }, [dispatch]);
   return (
     <View
       style={{
@@ -24,10 +45,12 @@ function HomeScreen({navigation}) {
         Про нас
       </Text>
       <Text style={styles.about}>
-        ФІТІС  орієнтований на комплексну підготовку студентів
+        ФІТІС орієнтований на комплексну підготовку студентів
       </Text>
-        <Button title={"Сайт ФІТІС"} onPress={() => Linking.openURL('https://fitis.chdtu.edu.ua')}>
-        </Button>
+      <Button
+        title={'Сайт ФІТІС'}
+        onPress={() => Linking.openURL('https://fitis.chdtu.edu.ua')}
+      />
       <Image
         style={styles.aboutLogo}
         source={{
@@ -146,25 +169,11 @@ function DetailsScreen({navigation: navigation}) {
   );
 }
 
-function NotificationsScreen({ navigation }) {
+function NotificationsScreen({navigation}) {
   return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20, backgroundColor: '#cccccc' }}>
-        <Text style={{ fontSize: 32, fontWeight: 'bold', marginBottom: 20, color: 'black' }}>Повернутися назад</Text>
-        <Button
-            onPress={() => navigation.goBack()}
-            title="*тицк назад"
-            titleStyle={{ fontSize: 20 }}
-            containerStyle={{ marginBottom: 40, borderRadius: 8 }}
-        />
-        <Text style={{ fontSize: 28, fontWeight: 'bold', marginBottom: 20, color: 'black'  }}>Мій GitHub</Text>
-        <Button
-            onPress={() => Linking.openURL('https://github.com/GeLoFK/ReactNative-Android')}
-            title="*тицк на GitHub"
-            titleStyle={{ fontSize: 18 }}
-            containerStyle={{ marginBottom: 40, borderRadius: 8 }}
-        />
-        {/* Добавьте еще кнопок или текста, как вам нужно */}
-      </View>
+    <News>
+
+    </News>
   );
 }
 
@@ -190,12 +199,16 @@ function StackNavigator() {
 
 function App() {
   return (
-    <NavigationContainer>
-      <Drawer.Navigator initialRouteName="Main">
-        <Drawer.Screen name="Меню" component={StackNavigator} />
-        <Drawer.Screen name="Тест" component={NotificationsScreen} />
-      </Drawer.Navigator>
-    </NavigationContainer>
+    <PersistGate loading={<Text>Loading...</Text>} persistor={persistor}>
+      <Provider store={store}>
+        <NavigationContainer>
+          <Drawer.Navigator initialRouteName="Main">
+            <Drawer.Screen name="Меню" component={StackNavigator} />
+            <Drawer.Screen name="Новини" component={NotificationsScreen} />
+          </Drawer.Navigator>
+        </NavigationContainer>
+      </Provider>
+    </PersistGate>
   );
 }
 
@@ -348,7 +361,7 @@ const styles = StyleSheet.create({
   aboutLogo: {
     height: 300,
     width: 320,
-    position: "absolute",
+    position: 'absolute',
     bottom: 80,
   },
   nosik: {
