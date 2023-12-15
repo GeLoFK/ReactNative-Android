@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   Button,
-  Image,
+  Image, Linking,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -13,14 +13,21 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 
 function HomeScreen({navigation}) {
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#cccccc'}}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#cccccc',
+      }}>
       <Text style={{fontSize: 32, fontWeight: 'bold', color: 'black'}}>
         Про нас
       </Text>
       <Text style={styles.about}>
-        Моя мета - створити продукт для вас, поєднати технічні навички з
-        платформа ...Android.
+        ФІТІС  орієнтований на комплексну підготовку студентів
       </Text>
+        <Button title={"Сайт ФІТІС"} onPress={() => Linking.openURL('https://fitis.chdtu.edu.ua')}>
+        </Button>
       <Image
         style={styles.aboutLogo}
         source={{
@@ -64,7 +71,13 @@ function HomeScreen({navigation}) {
 
 function DetailsScreen({navigation: navigation}) {
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#cccccc'}}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#cccccc',
+      }}>
       <Image
         style={{
           borderRadius: 50,
@@ -133,14 +146,25 @@ function DetailsScreen({navigation: navigation}) {
   );
 }
 
-function NotificationsScreen({navigation: navigation}) {
+function NotificationsScreen({ navigation }) {
   return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Button
-        onPress={() => navigation.goBack()}
-        title="Ну давай, натисни на мене"
-      />
-    </View>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20, backgroundColor: '#cccccc' }}>
+        <Text style={{ fontSize: 32, fontWeight: 'bold', marginBottom: 20, color: 'black' }}>Повернутися назад</Text>
+        <Button
+            onPress={() => navigation.goBack()}
+            title="*тицк назад"
+            titleStyle={{ fontSize: 20 }}
+            containerStyle={{ marginBottom: 40, borderRadius: 8 }}
+        />
+        <Text style={{ fontSize: 28, fontWeight: 'bold', marginBottom: 20, color: 'black'  }}>Мій GitHub</Text>
+        <Button
+            onPress={() => Linking.openURL('https://github.com/GeLoFK/ReactNative-Android')}
+            title="*тицк на GitHub"
+            titleStyle={{ fontSize: 18 }}
+            containerStyle={{ marginBottom: 40, borderRadius: 8 }}
+        />
+        {/* Добавьте еще кнопок или текста, как вам нужно */}
+      </View>
   );
 }
 
@@ -322,9 +346,10 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   aboutLogo: {
-    height: 400,
-    width: 420,
-    marginTop: 50,
+    height: 300,
+    width: 320,
+    position: "absolute",
+    bottom: 80,
   },
   nosik: {
     position: 'absolute',
